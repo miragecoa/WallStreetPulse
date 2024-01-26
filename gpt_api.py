@@ -12,7 +12,7 @@ import time
 
 # https://platform.openai.com/api-keys
 api_base = "https://api.openai.com/v1"
-api_key = "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"
+api_key = "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"
 
 # Types of model to be used, can be found at https://platform.openai.com/docs/models/overview
 model_type = "gpt-3.5-turbo"
