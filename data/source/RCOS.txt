@@ -1,0 +1,3 @@
+RCOS document
+RCOS is a community of motivated students at RPI who develop open source projects under the guidance of experienced instructors and student mentors.
+RCOS is also a venue for open learning and student teaching, as well as exploring the world of open source.

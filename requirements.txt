@@ -1,0 +1,8 @@
+requests==2.31.0
+pydantic==1.10.2
+langchain==0.0.334
+openai==0.28.1
+chromadb==0.3.26
+tiktoken==0.5.1
+unstructured==0.10.30
+ipywidgets==8.0.4
