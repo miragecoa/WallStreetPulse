@@ -17,3 +17,5 @@ response, chat_history = gpt_api.get_response("What is WallStreetPulse")
 
 
 
+
+
