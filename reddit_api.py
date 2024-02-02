@@ -24,10 +24,11 @@ headers['Authorization'] = f'bearer {TOKEN}'
 
 # Request using API
 # API can be found https://www.reddit.com/dev/api/
-BASE_URL = 'https://oauth.reddit.com'
+BASE_URL = 'https://oauth.reddit.com/r/wallstreetbets'
 
 def get_hot_posts():
-    return requests.get( BASE_URL + "/r/wallstreetbets/hot", headers=headers)
+    return requests.get( BASE_URL + "/hot", headers=headers)
 
 # ADD MORE USEFUL API HERE
-
+def get_comments(id):
+    return requests.get ( BASE_URL + "/comments/" + id, headers=headers)
