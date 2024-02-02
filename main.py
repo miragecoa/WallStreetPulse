@@ -16,9 +16,7 @@ import reddit_api
 # picture to text?
 
 comments = reddit_api.get_comments("1ah5s7j")
-# print(comments.json())
-print (extract_body(comments.json))
-
+print(comments.json())
 
 # response, chat_history = gpt_api.get_response("What is RCOS")
 
