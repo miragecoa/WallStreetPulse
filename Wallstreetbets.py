@@ -1,23 +1,9 @@
-'''*****************************************************************************
-Purpose: To analyze the sentiments of r/wallstreetbets
-This program uses Vader SentimentIntensityAnalyzer to calculate the ticker compound value. 
-You can change multiple parameters to suit your needs. See below under "set program parameters."
-Implementation:
-I am using sets to compare that if the ticker is valid, sets time complexity for
-"x in s" is O(1) compare to list: O(n).
-Limitations:
-It depends mainly on the defined parameters for current implementation:
-It completely ignores the heavily downvoted comments, and there can be a time when
-the most mentioned ticker is heavily downvoted, but you can change that in upvotes variable.
-Author: github:asad70
--------------------------------------------------------------------
-****************************************************************************'''
 import praw
 from data import *
 import time
 import pandas as pd
-
-
+#import matplotlib.pyplot as plt
+#import squarify
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 class WallStreetBets:
@@ -36,8 +22,8 @@ class WallStreetBets:
 def analyze(clientid, clientsecret, usernme, passwrd):
     # set the program parameters
     limit = 500      # define the limit
-    upvotes = 2     # define # of upvotes, comment is considered if upvotes exceed this #
-    picks = 10     # define # of picks here, prints as "Top ## picks are:"
+    upvotes = 10     # define # of upvotes, comment is considered if upvotes exceed this #
+    picks = 20    # define # of picks here, prints as "Top ## picks are:"
     picks_ayz = 5   # define # of picks for sentiment analysis
     post_flairs = ['Daily Discussion', 'Weekend Discussion', 'Discussion']    # posts flairs to search
     posts, count, c_analyzed, tickers, titles, a_comments = 0, 0, 0, {}, [], {}
@@ -57,7 +43,7 @@ def analyze(clientid, clientsecret, usernme, passwrd):
     WSB = WallStreetBets(current_time, c_analyzed, posts, picks, top_picks, symbols, titles, picks_ayz, scores)
 
     print_results(WSB)
-    
+    print_sentiment_analysis(WSB)
     return WSB
 
 def reddit_login(user, clientid, clientsecret, usernme, passwrd):
