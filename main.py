@@ -1,4 +1,5 @@
 import praw
+from data import us, blacklist
 
 def authenticate():
     ID = "mGJKXOitGGulU5pBJ9Zmqg"
@@ -14,6 +15,38 @@ def authenticate():
         user_agent="testscript by u/fakebot3",
     )
     return reddit
+
+def get_mentions(text):
+    potential_mentions = [word for word in text.split() if word.isupper()]
+
+    mentions = [mention for mention in potential_mentions if mention not in blacklist and mention in us]
+
+    return mentions
+
+def get_most_mentioned_tickers(submission, comments):
+    all_mentions = []
+
+   
+    all_mentions.extend(get_mentions(submission.title))
+    all_mentions.extend(get_mentions(submission.selftext))
+
+    
+    for comment in comments:
+        all_mentions.extend(get_mentions(comment.body))
+
+    mention_counts = {mention: all_mentions.count(mention) for mention in set(all_mentions)}
+
+   
+    sorted_mentions = sorted(mention_counts.items(), key=lambda x: x[1], reverse=True)
+
+    return sorted_mentions
+
+def print_most_mentioned_tickers(mentions):
+    print("\nMost Mentioned Tickers:")
+    for mention in mentions:
+        print(f"{mention[0]}: {mention[1]} mentions")
+    print("-" * 100)
+
 
 def get_top_posts(subreddit_name, num_posts):
     reddit = authenticate()
@@ -51,6 +84,9 @@ def main():
         print_submission_info(submission)
         top_comments = get_top_comments(submission)
         print_top_comments(top_comments)
+
+        mentions = get_most_mentioned_tickers(submission, top_comments)
+        print_most_mentioned_tickers(mentions)
 
 if __name__ == "__main__":
     main()
