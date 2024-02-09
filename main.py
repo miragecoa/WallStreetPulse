@@ -1,4 +1,4 @@
-from test import Reddit_Posts
+from Reddit_Posts import Reddit_Posts
 
 def main():
     posts = Reddit_Posts(num_posts=10, subreddit_name="wallstreetbets")
