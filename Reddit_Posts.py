@@ -86,7 +86,33 @@ class Reddit_Posts:
     # comment.downs
     def get_comments(self, n, num_comments):
         self.posts[n].comments.replace_more(limit=0)
-        # !!!!!self.posts sorting by score takes long time
-        return sorted(self.posts[n].comments.list(), key=lambda x: x.score, reverse=True)[:num_comments]
+        comments = sorted(self.posts[n].comments.list(), key=lambda x: x.score, reverse=True)[:num_comments]
 
+        comment_data = []
+        for comment in comments:
+            comment_info = {
+                'author': comment.author,
+                'upvotes': comment.score,
+                'downvotes': comment.downs,
+                'content': comment.body,
+                'replies': self.get_comment_replies(comment, num_replies=3)  # Adjust the number of replies as needed
+            }
+            comment_data.append(comment_info)
 
+        return comment_data
+
+    def get_comment_replies(self, comment, num_replies):
+        comment.replies.replace_more(limit=0)
+        replies = comment.replies.list()[:num_replies]
+
+        reply_data = []
+        for reply in replies:
+            reply_info = {
+                'author': reply.author,
+                'upvotes': reply.score,
+                'downvotes': reply.downs,
+                'content': reply.body
+            }
+            reply_data.append(reply_info)
+
+        return reply_data
