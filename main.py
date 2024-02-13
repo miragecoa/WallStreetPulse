@@ -78,8 +78,7 @@ def main():
     subreddit_name = "wallstreetbets"
     num_posts = 3
 
-    top_posts = get_top_posts(subreddit_name, num_posts)
-
+    
     for submission in top_posts:
         print_submission_info(submission)
         top_comments = get_top_comments(submission)
