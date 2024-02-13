@@ -22,7 +22,7 @@ def main():
     print(f"Author: {posts.get_author(1)}")
     print(posts.get_content(1))
 
-    print(f"First hot comment: {posts.get_comments(1, 2)[0].body}")
+    print(f"First hot comment: {posts.get_comments(1, 2)[0]['content']}")
 
 
 
