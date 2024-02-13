@@ -6,3 +6,5 @@ chromadb==0.3.26
 tiktoken==0.5.1
 unstructured==0.10.30
 ipywidgets==8.0.4
+
+praw~=7.7.1

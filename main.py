@@ -27,8 +27,39 @@ reddit = praw.Reddit(
     password=PASSWORD,
     user_agent="testscript by u/fakebot3",
 )
-for submission in reddit.subreddit("WallStreetbets").hot(limit=10):
+
+print("Hot Posts:\n")
+for submission in reddit.subreddit("WallStreetbets").hot(limit=15):
+    print("Score: ")
+    print(submission.score)
+    print("\n----------------------\n")
+    print("Title: ")
     print(submission.title)
+    print("\n----------------------\n")
+    print("Author: ")
+    print(submission.author.name)
+    print("\n----------------------\n")
+    print("URL: ")
+    print(submission.url)
+    print("\n----------------------\n")
+    print("\n")
+
+print("Rising Posts:\n")
+for submission in reddit.subreddit("WallStreetbets").rising(limit=50):
+    print("Score: ")
+    print(submission.score)
+    print("\n----------------------\n")
+    print("Title: ")
+    print(submission.title)
+    print("\n----------------------\n")
+    print("Author: ")
+    print(submission.author.name)
+    print("\n----------------------\n")
+    print("URL: ")
+    print(submission.url)
+    print("\n----------------------\n")
+    print("\n")
+
 
 #https://praw.readthedocs.io/en/stable/code_overview/models/subreddit.html    #praw.models.Subreddit
 
