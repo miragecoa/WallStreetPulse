@@ -1,4 +1,6 @@
 import praw
+from collections import Counter
+from datetime import datetime, timedelta
 
 ID = "mGJKXOitGGulU5pBJ9Zmqg"
 SECRIT_KEY = "zZR3V_O4kRdzjJqKZN9-oNluADiHfg"
@@ -31,6 +33,34 @@ class Reddit_Posts:
     # String
     def get_author(self, n):
         return self.posts[n].author
+    
+    def get_user_post_frequency(self, username, time_frame_days):
+        # Calculate the timestamp for the specified time frame
+        timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
+        timestamp = int(timestamp_limit.timestamp())
+
+        # Extract the authors from the posts using the get_author method and filter by time frame
+        posts_within_time_frame = [post for post in self.posts if
+                                   post.created_utc > timestamp and post.author and post.author.name == username]
+
+        # Count the frequency of posts for the specified user
+        user_frequency = len(posts_within_time_frame)
+
+        return user_frequency
+    
+    def get_all_authors_post_frequency(self, time_frame_days):
+        # Calculate the timestamp for the specified time frame
+        timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
+        timestamp = int(timestamp_limit.timestamp())
+
+        # Extract the authors from the posts using the get_author method and filter by time frame
+        authors = [post.author.name for post in self.posts if
+                   post.created_utc > timestamp and post.author is not None]
+
+        # Count the frequency of posts for each author
+        author_frequency = Counter(authors)
+
+        return dict(author_frequency)
 
     ### Specification ###
     # inputs:
@@ -46,7 +76,16 @@ class Reddit_Posts:
     # return: the content of the n-th post (What the author says)
     # String
     def get_content(self, n):
-        return self.posts[n].selftext
+        post = self.posts[n]
+    # Check if the post is a text post
+        if post.is_self:
+            return post.selftext
+        # Check if the post is an image post
+        elif post.url.endswith(('.jpg', '.jpeg', '.png', '.gif')):
+            return f"Image URL: {post.url}"
+        # Return None for other types of posts
+        else:
+            return None
 
     ### Specification ###
     # inputs:
@@ -85,11 +124,14 @@ class Reddit_Posts:
     # comment.score
     # comment.downs
     def get_comments(self, n, num_comments):
-        self.posts[n].comments.replace_more(limit=0)
-        comments = sorted(self.posts[n].comments.list(), key=lambda x: x.score, reverse=True)[:num_comments]
+        post = self.posts[n]
+        post.comments.replace_more(limit=0)
+        comments = sorted(post.comments.list(), key=lambda x: x.score, reverse=True)[:num_comments]
 
         comment_data = []
         for comment in comments:
+            # comment_info is a dictionary containing information about the comment,
+            # including the author, upvotes, downvotes, content, and replies.
             comment_info = {
                 'author': comment.author,
                 'upvotes': comment.score,
@@ -100,7 +142,7 @@ class Reddit_Posts:
             comment_data.append(comment_info)
 
         return comment_data
-
+    
     def get_comment_replies(self, comment, num_replies):
         comment.replies.replace_more(limit=0)
         replies = comment.replies.list()[:num_replies]
