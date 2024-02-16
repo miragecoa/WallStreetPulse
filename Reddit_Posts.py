@@ -61,6 +61,37 @@ class Reddit_Posts:
         author_frequency = Counter(authors)
 
         return dict(author_frequency)
+    
+    ### Updated Method ###
+    # Calculate the post frequency, average upvotes per post, and upvote to downvote ratio per post
+    # for each unique author in the specified time frame
+    def get_all_authors_post_stats(self, time_frame_days):
+        # Calculate the timestamp for the specified time frame
+        timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
+        timestamp = int(timestamp_limit.timestamp())
+
+        # Initialize dictionaries to store post statistics for each author
+        author_frequency = Counter()
+        author_upvotes = Counter()
+        author_downvotes = Counter()
+
+        # Iterate through posts and calculate post statistics for each author
+        for post in self.posts:
+            if post.created_utc > timestamp and post.author is not None:
+                author_frequency[post.author.name] += 1
+                author_upvotes[post.author.name] += post.ups
+                author_downvotes[post.author.name] += post.downs
+
+        # Calculate average upvotes per post and upvote to downvote ratio per post for each author
+        author_average_upvotes = {author: (upvotes / frequency) if frequency > 0 else 0
+                                  for author, frequency in author_frequency.items()
+                                  for upvotes in [author_upvotes[author]]}
+        
+        author_upvote_to_downvote_ratio = {author: (upvotes / max(downvotes, 1))  # Avoid division by zero
+                                           for author, upvotes in author_upvotes.items()
+                                           for downvotes in [author_downvotes[author]]}
+
+        return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio
 
     ### Specification ###
     # inputs:
