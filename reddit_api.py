@@ -55,10 +55,6 @@ class Reddit_API:
         # Prints the direct comments of the post
         for i in range(0, len(comments_list.get('data').get('children'))):
             print(comments_list.get('data').get('children')[i].get('data').get('body'))
-            # dict_keys(['count', 'name', 'id', 'parent_id', 'depth', 'children'])
-            print(comments_list.get('data').get('children')[i].get('data').get('depth'))
-            print(comments_list.get('data').get('children')[i].get('data').get('children'))
-
             # Print all replies to the comment
             if isinstance(comments_list.get('data').get('children')[i].get('data').get('replies'), dict):
                 self.get_comments(comments_list.get('data').get('children')[i].get('data').get('replies'))
@@ -68,7 +64,6 @@ class Reddit_API:
     def get_comment(self, comment):
         # Prints the direct comment of the post
         print(comment.get('data').get('body'))
-
         # Print the replies to the comment
         if isinstance(comment.get('data').get('replies'), dict):
             self.get_comments(comment.get('data').get('replies'))
