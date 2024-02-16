@@ -53,27 +53,43 @@ def main():
         print(f"Titles of posts by {author} in the last {time_frame_days} days:")
         for title in posts_titles_within_time_frame:
             print(f"- {title}")
-    '''
+    
+    ###test to see if all post stats are correct
     time_frame_days = 3
-
     # Get the timestamp for the start of the time frame
     timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
 
-    # Get post frequency, average upvotes per post, and upvote to downvote ratio per post
-    # for each unique author in the specified time frame
-    authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio = posts.get_all_authors_post_stats(time_frame_days)
+    # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
+    # and average comments per post for each unique author in the specified time frame
+    authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = posts.get_all_authors_post_stats(time_frame_days)
 
-   
+    # Print the results
     for author, frequency in authors_frequency.items():
         print(f"The frequency of posts by {author} in the chosen subreddit in the last {time_frame_days} days is: {frequency}")
 
-        # Prints average upvotes per post for each author
+        # Print average upvotes per post for each author
         average_upvotes = authors_average_upvotes.get(author, 0)
         print(f"The average upvotes per post for {author} in the last {time_frame_days} days is: {average_upvotes}")
 
-        # Prints upvote to downvote ratio per post for each author
+        # Print upvote to downvote ratio per post for each author
         upvote_to_downvote_ratio = authors_upvote_to_downvote_ratio.get(author, 0)
         print(f"The upvote to downvote ratio per post for {author} in the last {time_frame_days} days is: {upvote_to_downvote_ratio}")
+
+        # Print average comments per post for each author
+        average_comments = authors_average_comments.get(author, 0)
+        print(f"The average comments per post for {author} in the last {time_frame_days} days is: {average_comments}")
+    '''
+    time_frame_days = 3
+    # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
+    # and average comments per post for each unique author in the specified time frame
+    authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = posts.get_all_authors_post_stats(time_frame_days)
+
+   
+    author_scores = posts.calculate_author_scores(authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments)
+
+    # Print the composite scores
+    for author, score in author_scores.items():
+        print(f"The composite score for {author} is: {score}")
 
 if __name__ == "__main__":
     main()

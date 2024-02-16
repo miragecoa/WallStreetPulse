@@ -63,8 +63,8 @@ class Reddit_Posts:
         return dict(author_frequency)
     
     ### Updated Method ###
-    # Calculate the post frequency, average upvotes per post, and upvote to downvote ratio per post
-    # for each unique author in the specified time frame
+    # Calculate the post frequency, average upvotes per post, upvote to downvote ratio per post,
+    # and average comments per post for each unique author in the specified time frame
     def get_all_authors_post_stats(self, time_frame_days):
         # Calculate the timestamp for the specified time frame
         timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
@@ -74,6 +74,7 @@ class Reddit_Posts:
         author_frequency = Counter()
         author_upvotes = Counter()
         author_downvotes = Counter()
+        author_comments = Counter()
 
         # Iterate through posts and calculate post statistics for each author
         for post in self.posts:
@@ -81,8 +82,10 @@ class Reddit_Posts:
                 author_frequency[post.author.name] += 1
                 author_upvotes[post.author.name] += post.ups
                 author_downvotes[post.author.name] += post.downs
+                author_comments[post.author.name] += post.num_comments + len(post.comments.list())
 
-        # Calculate average upvotes per post and upvote to downvote ratio per post for each author
+        # Calculate average upvotes per post, upvote to downvote ratio per post,
+        # and average comments per post for each author
         author_average_upvotes = {author: (upvotes / frequency) if frequency > 0 else 0
                                   for author, frequency in author_frequency.items()
                                   for upvotes in [author_upvotes[author]]}
@@ -91,7 +94,39 @@ class Reddit_Posts:
                                            for author, upvotes in author_upvotes.items()
                                            for downvotes in [author_downvotes[author]]}
 
-        return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio
+        author_average_comments = {author: (comments / frequency) if frequency > 0 else 0
+                                   for author, frequency in author_frequency.items()
+                                   for comments in [author_comments[author]]}
+
+        return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio, author_average_comments
+
+    weights = {
+        'frequency': 0.3,
+        'upvotes': 0.2,
+        'ratio': 0.3,
+        'comments': 0.2
+    }
+
+    def calculate_author_scores(self, authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments):
+        author_scores = {}
+
+        for author in authors_frequency.keys():
+            # Calculate scores for each criterion
+            frequency_score = authors_frequency[author] * self.weights.get('frequency', 1)
+            upvotes_score = authors_average_upvotes.get(author, 0) * self.weights.get('upvotes', 1)
+            ratio_score = authors_upvote_to_downvote_ratio.get(author, 0) * self.weights.get('ratio', 1)
+            comments_score = authors_average_comments.get(author, 0) * self.weights.get('comments', 1)
+
+            # Combine scores using weights
+            total_score = frequency_score + upvotes_score + ratio_score + comments_score
+
+            # Store the total score for the author
+            author_scores[author] = total_score
+
+        return author_scores
+
+
+
 
     ### Specification ###
     # inputs:
