@@ -139,27 +139,23 @@ class Reddit_Posts:
     ### Specification ###
     # inputs:
     #   n: the number of the post
-    # return: the content of the n-th post (What the author says)
-    # String
+    # return: the content of the n-th post (What the author says), the img url(if there is an image)
+    # String, String
     def get_content(self, n):
+        return self.posts[n].selftext, self.posts[n].post.url
+        '''
         post = self.posts[n]
-    # Check if the post is a text post
+        # Check if the post is a text post
         if post.is_self:
             return post.selftext
         # Check if the post is an image post
         elif post.url.endswith(('.jpg', '.jpeg', '.png', '.gif')):
+            print(post.selftext, post.url)
             return f"Image URL: {post.url}"
         # Return None for other types of posts
         else:
             return None
-
-    ### Specification ###
-    # inputs:
-    #   n: the number of the post
-    # return: the content of the n-th post (What the author says)
-    # List of String.   ["urls","urls"]
-    def get_images(self, n):
-        return self.posts[n].url.endswith(('.jpg', '.jpeg', '.png', '.gif'))
+        '''
 
     ### Specification ###
     # inputs:
