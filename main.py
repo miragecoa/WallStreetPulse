@@ -1,6 +1,5 @@
 #
-# import reddit_api
-# import gpt_api
+
 #
 #
 # # Sample usages
@@ -12,7 +11,8 @@
 #
 # response, chat_history = gpt_api.get_response("What is WallStreetPulse")
 #
-
+#import reddit_api
+import gpt_api
 import praw
 from data import us, blacklist
 
