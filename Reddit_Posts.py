@@ -101,10 +101,10 @@ class Reddit_Posts:
         return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio, author_average_comments
 
     weights = {
-        'frequency': 0.3,
-        'upvotes': 0.2,
+        'frequency': 0.2,
+        'upvotes': 0.4,
         'ratio': 0.3,
-        'comments': 0.2
+        'comments': 0.1
     }
 
     def calculate_author_scores(self, authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments):
@@ -124,10 +124,8 @@ class Reddit_Posts:
             author_scores[author] = total_score
 
         return author_scores
-
-
-
-
+    
+    
     ### Specification ###
     # inputs:
     #   n: the number of the post
@@ -139,20 +137,27 @@ class Reddit_Posts:
     ### Specification ###
     # inputs:
     #   n: the number of the post
-    # return: the content of the n-th post (What the author says), the img url(if there is an image)
-    # (String, String)
+    # return: the content of the n-th post (What the author says)
+    # String
     def get_content(self, n):
         post = self.posts[n]
-        # Check if the post is a text post
+    # Check if the post is a text post
         if post.is_self:
-            return post.selftext, None
+            return post.selftext
         # Check if the post is an image post
         elif post.url.endswith(('.jpg', '.jpeg', '.png', '.gif')):
-            return post.selftext, post.url
+            return f"Image URL: {post.url}"
         # Return None for other types of posts
         else:
-            return None, None
+            return None
 
+    ### Specification ###
+    # inputs:
+    #   n: the number of the post
+    # return: the content of the n-th post (What the author says)
+    # List of String.   ["urls","urls"]
+    def get_images(self, n):
+        return self.posts[n].url.endswith(('.jpg', '.jpeg', '.png', '.gif'))
 
     ### Specification ###
     # inputs:
