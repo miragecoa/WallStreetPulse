@@ -124,7 +124,36 @@ class Reddit_Posts:
             author_scores[author] = total_score
 
         return author_scores
+    
+    def get_top_authors(posts_instance, time_frame_days):
+    # Get post statistics and author scores
+        authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments, author_scores = posts_instance.get_all_authors_post_stats(time_frame_days)
 
+        # Sort authors based on their scores (descending order)
+        sorted_authors = sorted(author_scores.items(), key=lambda x: x[1], reverse=True)
+
+        # Take the top 10 authors
+        top_authors = sorted_authors[:10]
+
+        # Gather information for each top author
+        author_info = []
+        for author, _ in top_authors:
+            # Get titles, content, comments, and replies
+            title = posts_instance.get_title(0)  # Get the title of the first post for the author (you can adjust the post index)
+            content = posts_instance.get_content(0)  # Get the content of the first post for the author (you can adjust the post index)
+            comments = posts_instance.get_comments(0, num_comments=5)  # Get the comments for the first post (you can adjust the post index and num_comments)
+            replies = posts_instance.get_comment_replies(comments[0], num_replies=3)  # Get replies to the first comment (you can adjust the comment index and num_replies)
+
+            # Store the information in a dictionary
+            author_info.append({
+                'author': author,
+                'title': title,
+                'content': content,
+                'comments': comments,
+                'replies': replies
+            })
+
+        return author_info
     ### Specification ###
     # inputs:
     #   n: the number of the post
