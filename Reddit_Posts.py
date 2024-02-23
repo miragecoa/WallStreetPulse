@@ -69,13 +69,11 @@ class Reddit_Posts:
         # Calculate the timestamp for the specified time frame
         timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
         timestamp = int(timestamp_limit.timestamp())
-
         # Initialize dictionaries to store post statistics for each author
         author_frequency = Counter()
         author_upvotes = Counter()
         author_downvotes = Counter()
         author_comments = Counter()
-
         # Iterate through posts and calculate post statistics for each author
         for post in self.posts:
             if post.created_utc > timestamp and post.author is not None:
@@ -124,6 +122,54 @@ class Reddit_Posts:
             author_scores[author] = total_score
 
         return author_scores
+    
+    def get_top_authors_info(self, time_frame_days):
+    # Get post statistics and author scores
+        authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = self.get_all_authors_post_stats(time_frame_days)
+
+        # Calculate author scores
+        author_scores = self.calculate_author_scores(authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments)
+
+        # Sort authors based on their scores (descending order)
+        sorted_authors = sorted(author_scores.items(), key=lambda x: x[1], reverse=True)
+
+        # Take the top 10 authors
+        top_authors = sorted_authors[:10]
+
+        # Gather information for each top author
+        author_info = []
+        for author, _ in top_authors:
+            # Get titles, content, comments, and replies
+            posts_info = []
+            for post_index in range(len(self.posts)):
+                title = self.get_title(post_index)
+                content = self.get_content(post_index)
+                author_name = self.get_author(post_index)  # Get the author name for the current post
+                comments = self.get_comments(post_index, num_comments=5)
+                comment_data = []
+                for comment_info in comments:
+                    comment_data.append({
+                        'author': comment_info['author'],
+                        'upvotes': comment_info['upvotes'],
+                        'downvotes': comment_info['downvotes'],
+                        'content': comment_info['content'],
+                        'replies': comment_info['replies']
+                    })
+                posts_info.append({
+                    'title': title,
+                    'content': content,
+                    'author': author_name,  # Store the author name for the current post
+                    'comments': comment_data
+                })
+
+            # Store the information in a dictionary
+            author_info.append({
+                'author': author,
+                'posts': posts_info
+            })
+
+        return author_info
+    
     
     
     ### Specification ###
