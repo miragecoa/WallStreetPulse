@@ -46,21 +46,6 @@ def main():
     for author, frequency in authors_frequency.items():
         print(f"The frequency of posts by {author} in the chosen subreddit in the last {time_frame_days} days is: {frequency}")
 
-        # Print titles of posts by the specified author within the time frame
-        posts_titles_within_time_frame = [post.title for post in posts.posts if
-                                           post.created_utc > timestamp_limit.timestamp() and
-                                           post.author and
-                                           post.author.name == author]
-        print(f"Titles of posts by {author} in the last {time_frame_days} days:")
-        for title in posts_titles_within_time_frame:
-            print(f"- {title}")
-    print(len(authors_frequency))
-    
-    ###test to see if all post stats are correct
-    # Get the timestamp for the start of the time frame
-    
-    timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
-
     # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
     # and average comments per post for each unique author in the specified time frame
     

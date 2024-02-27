@@ -1,0 +1,109 @@
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>'''\r\nimport reddit_api\r\nimport gpt_api\r\n\r\n\r\n# Sample usages\r\nposts = reddit_api.get_hot_posts()\r\n# print(posts.json())\r\n\r\n\r\nresponse, chat_history = gpt_api.get_response(\"What is RCOS\")\r\n\r\nresponse, chat_history = gpt_api.get_response(\"What is WallStreetPulse\")\r\n'''\r\n\r\nfrom Reddit_Posts import Reddit_Posts\r\nfrom datetime import datetime, timedelta\r\n\r\ndef main():\r\n    posts = Reddit_Posts(num_posts=100, subreddit_name=\"wallstreetbets\")\r\n    '''\r\n    ###test to see posts titles, authors, and comments works\r\n    print(f\"Title: {posts.get_title(1)}\")\r\n    print(f\"Author: {posts.get_author(1)}\")\r\n    print(posts.get_content(2))\r\n    print(f\"First hot comment: {posts.get_comments(1, 1)[0]['content']}\")\r\n\r\n    ###test to see if a specific user's post frequency is correct\r\n    username_to_check = \"OPINION_IS_UNPOPULAR\"\r\n    frequency_for_user = posts.get_user_post_frequency(username_to_check, time_frame_days)\r\n    print(f\"The frequency of posts by {username_to_check} in the chosen subreddit in the last {time_frame_days} days is: {frequency_for_user}\")\r\n    posts_titles_within_time_frame = [post.title for post in posts.posts if\r\n                                      post.created_utc > timestamp_limit.timestamp() \r\n                                      and post.author and post.author.name == username_to_check]\r\n    print(f\"Titles of posts by {username_to_check} in the last {time_frame_days} days:\")\r\n    for title in posts_titles_within_time_frame:\r\n        print(f\"- {title}\")\r\n    \r\n    ###test to see every author's posts that we grab from the desired number of votes\r\n    time_frame_days = 3\r\n    authors_frequency = posts.get_all_authors_post_frequency(time_frame_days)\r\n    timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)\r\n\r\n    # Print the results\r\n    for author, frequency in authors_frequency.items():\r\n        print(f\"The frequency of posts by {author} in the chosen subreddit in the last {time_frame_days} days is: {frequency}\")\r\n\r\n        # Print titles of posts by the specified author within the time frame\r\n        posts_titles_within_time_frame = [post.title for post in posts.posts if\r\n                                           post.created_utc > timestamp_limit.timestamp() and\r\n                                           post.author and\r\n                                           post.author.name == author]\r\n        print(f\"Titles of posts by {author} in the last {time_frame_days} days:\")\r\n        for title in posts_titles_within_time_frame:\r\n            print(f\"- {title}\")\r\n    \r\n    ###test to see if all post stats are correct\r\n    time_frame_days = 3\r\n    # Get the timestamp for the start of the time frame\r\n    timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)\r\n\r\n    # Get post frequency, average upvotes per post, upvote to downvote ratio per post,\r\n    # and average comments per post for each unique author in the specified time frame\r\n    authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = posts.get_all_authors_post_stats(time_frame_days)\r\n\r\n    # Print the results\r\n    for author, frequency in authors_frequency.items():\r\n        print(f\"The frequency of posts by {author} in the chosen subreddit in the last {time_frame_days} days is: {frequency}\")\r\n\r\n        # Print average upvotes per post for each author\r\n        average_upvotes = authors_average_upvotes.get(author, 0)\r\n        print(f\"The average upvotes per post for {author} in the last {time_frame_days} days is: {average_upvotes}\")\r\n\r\n        # Print upvote to downvote ratio per post for each author\r\n        upvote_to_downvote_ratio = authors_upvote_to_downvote_ratio.get(author, 0)\r\n        print(f\"The upvote to downvote ratio per post for {author} in the last {time_frame_days} days is: {upvote_to_downvote_ratio}\")\r\n\r\n        # Print average comments per post for each author\r\n        average_comments = authors_average_comments.get(author, 0)\r\n        print(f\"The average comments per post for {author} in the last {time_frame_days} days is: {average_comments}\")\r\n    '''\r\n    time_frame_days = 3\r\n    # Get post frequency, average upvotes per post, upvote to downvote ratio per post,\r\n    # and average comments per post for each unique author in the specified time frame\r\n    authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = posts.get_all_authors_post_stats(time_frame_days)\r\n\r\n   \r\n    author_scores = posts.calculate_author_scores(authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments)\r\n\r\n    # Print the composite scores\r\n    for author, score in author_scores.items():\r\n        print(f\"The composite score for {author} is: {score}\")\r\n\r\nif __name__ == \"__main__\":\r\n    main()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision b74a2264da806f6004346d029640b6eca87bd745)
++++ b/main.py	(date 1708723909679)
+@@ -18,13 +18,13 @@
+ 
+ def main():
+     posts = Reddit_Posts(num_posts=100, subreddit_name="wallstreetbets")
+-    '''
++
+     ###test to see posts titles, authors, and comments works
+     print(f"Title: {posts.get_title(1)}")
+     print(f"Author: {posts.get_author(1)}")
+     print(posts.get_content(2))
+     print(f"First hot comment: {posts.get_comments(1, 1)[0]['content']}")
+-
++    '''
+     ###test to see if a specific user's post frequency is correct
+     username_to_check = "OPINION_IS_UNPOPULAR"
+     frequency_for_user = posts.get_user_post_frequency(username_to_check, time_frame_days)
+@@ -78,7 +78,7 @@
+         # Print average comments per post for each author
+         average_comments = authors_average_comments.get(author, 0)
+         print(f"The average comments per post for {author} in the last {time_frame_days} days is: {average_comments}")
+-    '''
++    
+     time_frame_days = 3
+     # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
+     # and average comments per post for each unique author in the specified time frame
+@@ -90,6 +90,6 @@
+     # Print the composite scores
+     for author, score in author_scores.items():
+         print(f"The composite score for {author} is: {score}")
+-
++    '''
+ if __name__ == "__main__":
+     main()
+\ No newline at end of file
+Index: Reddit_Posts.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import praw\r\nfrom collections import Counter\r\nfrom datetime import datetime, timedelta\r\n\r\nID = \"mGJKXOitGGulU5pBJ9Zmqg\"\r\nSECRIT_KEY = \"zZR3V_O4kRdzjJqKZN9-oNluADiHfg\"\r\nUSER_NAME = \"WallStreetPulse\"\r\nPASSWORD = \"WSPdevteam\"\r\n\r\nreddit = praw.Reddit(\r\n    client_id=ID,\r\n    client_secret=SECRIT_KEY,\r\n    username=USER_NAME,\r\n    password=PASSWORD,\r\n    user_agent=\"testscript by u/fakebot3\",\r\n)\r\n\r\nclass Reddit_Posts:\r\n    def __init__(self, num_posts=10, subreddit_name=\"wallstreetbets\"):\r\n        posts = reddit.subreddit(subreddit_name).hot(limit=num_posts)\r\n        # !!!!!self.posts sorting by score takes long time\r\n        print(\"Blocking on Generating posts\")\r\n        # unsorted hotpost\r\n        self.posts = list(posts)\r\n        # sorted hotpost\r\n        # self.posts = sorted(posts, key=lambda x: x.score, reverse=True)\r\n        print(\"Release\")\r\n\r\n    ### Specification ###\r\n    # inputs:\r\n    #   n: the number of the post\r\n    # return: the author name of the n-th post\r\n    # String\r\n    def get_author(self, n):\r\n        return self.posts[n].author\r\n    \r\n    def get_user_post_frequency(self, username, time_frame_days):\r\n        # Calculate the timestamp for the specified time frame\r\n        timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)\r\n        timestamp = int(timestamp_limit.timestamp())\r\n\r\n        # Extract the authors from the posts using the get_author method and filter by time frame\r\n        posts_within_time_frame = [post for post in self.posts if\r\n                                   post.created_utc > timestamp and post.author and post.author.name == username]\r\n\r\n        # Count the frequency of posts for the specified user\r\n        user_frequency = len(posts_within_time_frame)\r\n\r\n        return user_frequency\r\n    \r\n    def get_all_authors_post_frequency(self, time_frame_days):\r\n        # Calculate the timestamp for the specified time frame\r\n        timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)\r\n        timestamp = int(timestamp_limit.timestamp())\r\n\r\n        # Extract the authors from the posts using the get_author method and filter by time frame\r\n        authors = [post.author.name for post in self.posts if\r\n                   post.created_utc > timestamp and post.author is not None]\r\n\r\n        # Count the frequency of posts for each author\r\n        author_frequency = Counter(authors)\r\n\r\n        return dict(author_frequency)\r\n    \r\n    ### Updated Method ###\r\n    # Calculate the post frequency, average upvotes per post, upvote to downvote ratio per post,\r\n    # and average comments per post for each unique author in the specified time frame\r\n    def get_all_authors_post_stats(self, time_frame_days):\r\n        # Calculate the timestamp for the specified time frame\r\n        timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)\r\n        timestamp = int(timestamp_limit.timestamp())\r\n\r\n        # Initialize dictionaries to store post statistics for each author\r\n        author_frequency = Counter()\r\n        author_upvotes = Counter()\r\n        author_downvotes = Counter()\r\n        author_comments = Counter()\r\n\r\n        # Iterate through posts and calculate post statistics for each author\r\n        for post in self.posts:\r\n            if post.created_utc > timestamp and post.author is not None:\r\n                author_frequency[post.author.name] += 1\r\n                author_upvotes[post.author.name] += post.ups\r\n                author_downvotes[post.author.name] += post.downs\r\n                author_comments[post.author.name] += post.num_comments + len(post.comments.list())\r\n\r\n        # Calculate average upvotes per post, upvote to downvote ratio per post,\r\n        # and average comments per post for each author\r\n        author_average_upvotes = {author: (upvotes / frequency) if frequency > 0 else 0\r\n                                  for author, frequency in author_frequency.items()\r\n                                  for upvotes in [author_upvotes[author]]}\r\n        \r\n        author_upvote_to_downvote_ratio = {author: (upvotes / max(downvotes, 1))  # Avoid division by zero\r\n                                           for author, upvotes in author_upvotes.items()\r\n                                           for downvotes in [author_downvotes[author]]}\r\n\r\n        author_average_comments = {author: (comments / frequency) if frequency > 0 else 0\r\n                                   for author, frequency in author_frequency.items()\r\n                                   for comments in [author_comments[author]]}\r\n\r\n        return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio, author_average_comments\r\n\r\n    weights = {\r\n        'frequency': 0.3,\r\n        'upvotes': 0.2,\r\n        'ratio': 0.3,\r\n        'comments': 0.2\r\n    }\r\n\r\n    def calculate_author_scores(self, authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments):\r\n        author_scores = {}\r\n\r\n        for author in authors_frequency.keys():\r\n            # Calculate scores for each criterion\r\n            frequency_score = authors_frequency[author] * self.weights.get('frequency', 1)\r\n            upvotes_score = authors_average_upvotes.get(author, 0) * self.weights.get('upvotes', 1)\r\n            ratio_score = authors_upvote_to_downvote_ratio.get(author, 0) * self.weights.get('ratio', 1)\r\n            comments_score = authors_average_comments.get(author, 0) * self.weights.get('comments', 1)\r\n\r\n            # Combine scores using weights\r\n            total_score = frequency_score + upvotes_score + ratio_score + comments_score\r\n\r\n            # Store the total score for the author\r\n            author_scores[author] = total_score\r\n\r\n        return author_scores\r\n\r\n\r\n\r\n\r\n    ### Specification ###\r\n    # inputs:\r\n    #   n: the number of the post\r\n    # return: the title of the n-th post\r\n    # String\r\n    def get_title(self, n):\r\n        return self.posts[n].title\r\n\r\n    ### Specification ###\r\n    # inputs:\r\n    #   n: the number of the post\r\n    # return: the content of the n-th post (What the author says), the img url(if there is an image)\r\n    # (String, String)\r\n    def get_content(self, n):\r\n        post = self.posts[n]\r\n        # Check if the post is a text post\r\n        if post.is_self:\r\n            return post.selftext, None\r\n        # Check if the post is an image post\r\n        elif post.url.endswith(('.jpg', '.jpeg', '.png', '.gif')):\r\n            return post.selftext, post.url\r\n        # Return None for other types of posts\r\n        else:\r\n            return None, None\r\n\r\n\r\n    ### Specification ###\r\n    # inputs:\r\n    #   n: the number of the post\r\n    # return: the upvotes of the n-th post\r\n    # String\r\n    def get_upvotes(self, n):\r\n        return self.posts[n].ups\r\n\r\n    ### Specification ###\r\n    # inputs:\r\n    #   n: the number of the post\r\n    # return: the downvotes of the n-th post\r\n    # String\r\n    def get_downvotes(self, n):\r\n        return self.posts[n].downs\r\n\r\n    ### Specification ###\r\n    # inputs:\r\n    #   n: the number of the post\r\n    #   num_comments: number of top comments you want under that post\r\n    # return: the comments of the n-th post\r\n    # List of Comments Object\r\n    #\r\n    # These are elements inside comment (could be more)\r\n    # comment.author\r\n    # comment.body\r\n    # comment.score\r\n    # comment.downs\r\n    def get_comments(self, n, num_comments):\r\n        post = self.posts[n]\r\n        post.comments.replace_more(limit=0)\r\n        comments = sorted(post.comments.list(), key=lambda x: x.score, reverse=True)[:num_comments]\r\n\r\n        comment_data = []\r\n        for comment in comments:\r\n            # comment_info is a dictionary containing information about the comment,\r\n            # including the author, upvotes, downvotes, content, and replies.\r\n            comment_info = {\r\n                'author': comment.author,\r\n                'upvotes': comment.score,\r\n                'downvotes': comment.downs,\r\n                'content': comment.body,\r\n                'replies': self.get_comment_replies(comment, num_replies=3)  # Adjust the number of replies as needed\r\n            }\r\n            comment_data.append(comment_info)\r\n\r\n        return comment_data\r\n    \r\n    def get_comment_replies(self, comment, num_replies):\r\n        comment.replies.replace_more(limit=0)\r\n        replies = comment.replies.list()[:num_replies]\r\n\r\n        reply_data = []\r\n        for reply in replies:\r\n            reply_info = {\r\n                'author': reply.author,\r\n                'upvotes': reply.score,\r\n                'downvotes': reply.downs,\r\n                'content': reply.body\r\n            }\r\n            reply_data.append(reply_info)\r\n\r\n        return reply_data\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Reddit_Posts.py b/Reddit_Posts.py
+--- a/Reddit_Posts.py	(revision b74a2264da806f6004346d029640b6eca87bd745)
++++ b/Reddit_Posts.py	(date 1708723909679)
+@@ -1,6 +1,10 @@
+ import praw
+ from collections import Counter
+ from datetime import datetime, timedelta
++import pytesseract
++from PIL import Image
++import requests
++from io import BytesIO
+ 
+ ID = "mGJKXOitGGulU5pBJ9Zmqg"
+ SECRIT_KEY = "zZR3V_O4kRdzjJqKZN9-oNluADiHfg"
+@@ -15,6 +19,8 @@
+     user_agent="testscript by u/fakebot3",
+ )
+ 
++
++
+ class Reddit_Posts:
+     def __init__(self, num_posts=10, subreddit_name="wallstreetbets"):
+         posts = reddit.subreddit(subreddit_name).hot(limit=num_posts)
+@@ -148,11 +154,18 @@
+             return post.selftext, None
+         # Check if the post is an image post
+         elif post.url.endswith(('.jpg', '.jpeg', '.png', '.gif')):
+-            return post.selftext, post.url
++            return post.selftext, self.image_to_text(post.url)
+         # Return None for other types of posts
+         else:
+             return None, None
+ 
++    def image_to_text(self, url):
++        pytesseract.pytesseract.tesseract_cmd = r'C:\path\to\tesseract.exe'
++        response = requests.get(url)
++        image = Image.open(BytesIO(response.content))
++        # Perform OCR
++        text = pytesseract.image_to_string(image)
++        print(text)
+ 
+     ### Specification ###
+     # inputs:
+Index: README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># WallStreetPulse\r\nI'm using Python 3.11 for this project. Other versions should also work, but there might be some dependency issues.\r\n\r\npip install -r requirements.txt\r\n\r\nhttps://stackoverflow.com/a/76245995 could solve chromadb problem\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/README.md b/README.md
+--- a/README.md	(revision b74a2264da806f6004346d029640b6eca87bd745)
++++ b/README.md	(date 1708723909679)
+@@ -4,3 +4,4 @@
+ pip install -r requirements.txt
+ 
+ https://stackoverflow.com/a/76245995 could solve chromadb problem
++
