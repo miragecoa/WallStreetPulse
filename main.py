@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 
 def main():
     posts = Reddit_Posts(num_posts=50, subreddit_name="wallstreetbets")
+    time_frame_days = 5
     
     '''
     ###test to see posts titles, authors, and comments works
@@ -38,7 +39,6 @@ def main():
         print(f"- {title}")
     
     ###test to see every author's posts that we grab from the desired number of days
-    time_frame_days = 100
     authors_frequency = posts.get_all_authors_post_frequency(time_frame_days)
     timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
 
@@ -57,12 +57,13 @@ def main():
     print(len(authors_frequency))
     
     ###test to see if all post stats are correct
-    time_frame_days = 3
     # Get the timestamp for the start of the time frame
+    
     timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
 
     # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
     # and average comments per post for each unique author in the specified time frame
+    
     authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = posts.get_all_authors_post_stats(time_frame_days)
 
     # Print the results
@@ -82,9 +83,9 @@ def main():
         print(f"The average comments per post for {author} in the last {time_frame_days} days is: {average_comments}")
     
     ###Test for composite scores
-    time_frame_days = 5
     # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
     # and average comments per post for each unique author in the specified time frame
+    
     authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = posts.get_all_authors_post_stats(time_frame_days)
 
     author_scores = posts.calculate_author_scores(authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments)
@@ -94,8 +95,9 @@ def main():
         print(f"The composite score for {author} is: {score}")
     '''
     ###Test for top authors
-    time_frame_days = 5
-    top_authors_info = posts.get_top_authors_info(time_frame_days)
+    num_comments=5
+
+    top_authors_info = posts.get_top_authors_info(time_frame_days, num_comments)
 
     # Print or use the gathered information as needed
     

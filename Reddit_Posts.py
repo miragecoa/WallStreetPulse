@@ -123,7 +123,7 @@ class Reddit_Posts:
 
         return author_scores
     
-    def get_top_authors_info(self, time_frame_days):
+    def get_top_authors_info(self, time_frame_days, num_comments):
     # Get post statistics and author scores
         authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments = self.get_all_authors_post_stats(time_frame_days)
 
@@ -145,7 +145,7 @@ class Reddit_Posts:
                 title = self.get_title(post_index)
                 content = self.get_content(post_index)
                 author_name = self.get_author(post_index)  # Get the author name for the current post
-                comments = self.get_comments(post_index, num_comments=5)
+                comments = self.get_comments(post_index, num_comments)
                 comment_data = []
                 for comment_info in comments:
                     comment_data.append({
