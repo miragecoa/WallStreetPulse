@@ -5,14 +5,10 @@ from reddit_api import Reddit_API
 # can be solved using /api/morechildren
 
 # Reddit API object
+# https://www.reddit.com/r/wallstreetbets/comments/1axhn74/most_anticipated_earnings_releases_for_the_week/
 api = Reddit_API()
-post = api.get_post_data("1arusfa")
-hot_posts = api.get_hot_posts() # dict
-# print(hot_posts.keys()) # dict_keys(['kind', 'data'])
-# print(hot_posts.get('data').keys()) # dict_keys(['after', 'dist', 'modhash', 'geo_filter', 'children', 'before'])
-# print(hot_posts.get('data').get('children')[0].keys()) # dict_keys(['kind', 'data'])
-print(hot_posts.get('data').get('children')[0].get('data').keys())
-api.get_all_comments_data(post[1]);
+post = api.get_post_data("1axhn74")
+hot_posts = api.get_hot_posts()
 
 # For each level of children, add to current level .get('data').get('replies').get('data').get('children')[0]
 # Function calls
@@ -26,3 +22,6 @@ api.get_all_comments_data(post[1]);
 # for i in range(0, len(hot_posts.get('data').get('children'))):
 #     data = api.get_post_data(api.get_post_id(hot_posts.get('data').get('children')[i]))
 #     api.get_comments(data[1])
+
+res = ""
+print(api.get_all_comments_data(post[1], res))

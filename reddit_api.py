@@ -68,7 +68,25 @@ class Reddit_API:
     def get_upvote_ratio(self, data):
         return data.get('data').get('upvote_ratio')
 
-    # Gets all data for the post
+    # Gets a comment and all its replies on a post
+    # comment should be in format post[1].get('data').get('children')[i]
+    def get_comment(self, comment):
+        return comment.get('data').get('body')
+
+    # Gets comments, replies and individual ups, downs, and upvote ratio.
+    def get_all_comments_data(self, data, res):  # make this return a string
+        for i in range(0, len(data.get('data').get('children'))):
+            res = (res + f"{self.get_comment(data.get('data').get('children')[i])}"
+                   + " Ups: " + f"{self.get_ups(data.get('data').get('children')[i])}"
+                   + " Downs: " + f"{self.get_downs(data.get('data').get('children')[i])}"
+                   + " Ratio: " + f"{self.get_upvote_ratio(data.get('data').get('children')[i])}" + "\n")
+            # Print all data of the replies to the comment
+            if isinstance(data.get('data').get('children')[i].get('data').get('replies'), dict):
+                self.get_all_comments_data(data.get('data').get('children')[i].get('data').get('replies'), res)
+        return res
+
+    # FUNCTIONS FOR TESTING
+    # Gets all data for the post for testing
     def get_all_post_data(self, data):
         print(self.get_post_title(data))
         print(self.get_post_content(data))
@@ -76,29 +94,22 @@ class Reddit_API:
         print(self.get_downs(data))
         print(self.get_upvote_ratio(data))
 
-    # Gets a comment and all its replies on a post
-    # comment should be in format post[1].get('data').get('children')[i]
-    def get_comment(self, comment):
-        return comment.get('data').get('body')
-
-    # Gets all comments and all replies to a comment of a post
-    # comments_list should be in format post[1]
-    def get_comments(self, comments_list):
+    # Gets all comments and all replies to a comment of a post for testing
+    # data should be in format post[1]
+    def get_comments(self, data):
         # Prints the direct comments of the post
-        for i in range(0, len(comments_list.get('data').get('children'))):
-            print(self.get_comment(data.get('data').get('children')[i]))
-            # Print all replies to the comment
-            if isinstance(comments_list.get('data').get('children')[i].get('data').get('replies'), dict):
-                self.get_comments(comments_list.get('data').get('children')[i].get('data').get('replies'))
-
-    # Gets comments, replies and individual ups, downs, and upvote ratio.
-    def get_all_comments_data(self, data):
-        # Prints the data of comment
         for i in range(0, len(data.get('data').get('children'))):
             print(self.get_comment(data.get('data').get('children')[i]))
-            print(self.get_ups(data.get('data').get('children')[i]))
-            print(self.get_downs(data.get('data').get('children')[i]))
-            print(self.get_upvote_ratio(data.get('data').get('children')[i]))
-            # Print all data of the replies to the comment
+            # Print all replies to the comment
             if isinstance(data.get('data').get('children')[i].get('data').get('replies'), dict):
-                self.get_all_comments_data(data.get('data').get('children')[i].get('data').get('replies'))
+                self.get_comments(data.get('data').get('children')[i].get('data').get('replies'))
+
+    def get_more_children(self, comment_id, link_id, children, limit, depth):
+        params = {
+            'link_id': link_id,
+            'children': children,
+            'limit_children': limit,
+            'depth': depth
+        }
+        return requests.get(BASE_URL + "/comments/" + comment_id + "/api/morechildren/", headers=headers).json()
+    # https://api.reddit.com/comments/67k25q/api/morechildren?api_type=json&showmore=true&link_id=t3_67k25q
