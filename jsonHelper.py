@@ -1,42 +1,59 @@
-import sqlite3
+import json
+import os
 
-conn = sqlite3.connect('postDB.db')
-
-cursor = conn.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS redditPosts
-                  (postId INTEGER PRIMARY KEY, author TEXT, likes INTEGER)''')
-conn.commit()
-
+DATA_FILENAME = 'data.json'
 input_dictionary = {
   "postId": 12345,
   "author": "JohnSmith",
   "likes": 123
 }
 
+# Creates an empty json file if json file doesn't exist
+if not os.path.isfile(DATA_FILENAME):
+    with open(DATA_FILENAME, mode='w', encoding='utf-8') as f:
+        json.dump([], f)
 
+
+# Adds a new post
 def add_post():
-    cursor.execute("INSERT INTO redditPosts (postId, author, likes) VALUES (?, ?, ?)",
-                   (input_dictionary["postId"], input_dictionary["author"], input_dictionary["likes"]))
-    conn.commit()
+    # load previous entries
+    with open(DATA_FILENAME, "r") as file:
+        data = json.load(file)
+
+    # re-add old entries + new entry.
+    entry = {'postId': input_dictionary['postId'], 'author': input_dictionary['author'], 'likes': input_dictionary['likes']}
+    data.append(entry)
+    with open(DATA_FILENAME, 'w') as file:
+        file.write(json.dumps(data))
 
 
-def update_likes(new_likes):
-    input_dictionary["likes"] = new_likes
-    cursor.execute("UPDATE redditPosts SET likes = ? WHERE id = ?",
-                   (new_likes, input_dictionary["postId"]))
-    conn.commit()
+# deletes an entry given an entry's index.
+def delete_data(index):
+    new_data = []
+    with open(DATA_FILENAME, "r") as file:
+        data = json.load(file)
+
+    for i, entry in enumerate(data):
+        if i != int(index):
+            new_data.append(entry)
+
+    with open(DATA_FILENAME, "w") as file:
+        json.dump(new_data, file)
 
 
-def display_table():
-    cursor.execute("SELECT * FROM redditPosts")
-    rows = cursor.fetchall()
-    for row in rows:
-        print(row)
+def print_data():
+    with open(DATA_FILENAME, "r") as file:
+        data = json.load(file)
+        # iterate over data
+        for i, entry in enumerate(data):
+            entry_id = entry["postId"]
+            entry_author = entry["author"]
+            entry_likes = entry["likes"]
+            print(f"Index Number: {i}")
+            print(f"postId : {entry_id}")
+            print(f"author : {entry_author}")
+            print(f"likes : {entry_likes}")
+            print("\n\n")
 
 
-def delete_post():
-    cursor.execute("DELETE FROM redditPosts WHERE id = ?", (input_dictionary["postId"],))
-    conn.commit()
 
-
-conn.close()
