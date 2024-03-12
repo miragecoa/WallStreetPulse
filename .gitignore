@@ -1,0 +1,7 @@
+
+apikey.txt
+__pycache__/
+*.pyc
+
+Wallstreetbets.py
+vader.py
