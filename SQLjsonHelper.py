@@ -27,10 +27,9 @@ def add_post():
         sql_prompt += "?, "
     sql_prompt += "?)"
     print("sql_prompt: ", sql_prompt)
-    print("\n")
+
     # Executes prompt
-    cursor.execute(sql_prompt,
-                   (input_dictionary["postId"], input_dictionary["author"], input_dictionary["likes"]))
+    cursor.execute(sql_prompt, list(input_dictionary.values()))
     conn.commit()
 
 
