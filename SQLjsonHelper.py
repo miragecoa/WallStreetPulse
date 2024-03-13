@@ -18,10 +18,7 @@ input_dictionary = {
 def add_post():
     # Creates the sql prompt to insert a post
     sql_prompt = "INSERT INTO redditPosts("
-    for key in islice(input_dictionary.keys(), 0, len(input_dictionary)-1, 1):
-        sql_prompt += key
-        sql_prompt += ", "
-    sql_prompt += list(input_dictionary.keys())[-1]
+    sql_prompt += ", ".join(str(v) for v in input_dictionary.keys())
     sql_prompt += ") VALUES ("
     for x in range(len(input_dictionary)-1):
         sql_prompt += "?, "
@@ -44,7 +41,7 @@ def display_table():
     cursor.execute("SELECT COUNT(*) FROM redditPosts")
     result = cursor.fetchall()
     if result[0][0] == 0:
-        print("redditPosts is currently empty\n")
+        print("redditPosts Table is currently empty\n")
 
     else:
         cursor.execute("SELECT * FROM redditPosts")
@@ -70,7 +67,6 @@ def main():
                        "c - clear table\nq - quit\n "
                        "----------------------\n")
         print("Action: '", action, "'")
-        print("Output: ")
         if action == "a":
             add_post()
         if action == "d":
