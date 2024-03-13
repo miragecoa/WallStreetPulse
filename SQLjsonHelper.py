@@ -15,18 +15,31 @@ input_dictionary = {
 }
 
 
-def add_post():
+def add_post(table_name, input_dict):
+    # Checks if post already exists in database
+    sql_prompt = "SELECT 1 FROM "
+    sql_prompt += table_name
+    sql_prompt += " WHERE postId = "
+    sql_prompt += str(input_dict["postId"])
+    cursor.execute(sql_prompt)
+    result = cursor.fetchall()
+    if result:
+        print("ERROR: Post already added/ Same postID")
+        return
+
     # Creates the sql prompt to insert a post
-    sql_prompt = "INSERT INTO redditPosts("
-    sql_prompt += ", ".join(str(v) for v in input_dictionary.keys())
+    sql_prompt = "INSERT INTO "
+    sql_prompt += table_name
+    sql_prompt += "("
+    sql_prompt += ", ".join(str(v) for v in input_dict.keys())
     sql_prompt += ") VALUES ("
-    for x in range(len(input_dictionary)-1):
+    for x in range(len(input_dict)-1):
         sql_prompt += "?, "
     sql_prompt += "?)"
     print("sql_prompt: ", sql_prompt)
 
     # Executes prompt
-    cursor.execute(sql_prompt, list(input_dictionary.values()))
+    cursor.execute(sql_prompt, list(input_dict.values()))
     conn.commit()
 
 
@@ -68,7 +81,7 @@ def main():
                        "----------------------\n")
         print("Action: '", action, "'")
         if action == "a":
-            add_post()
+            add_post("redditPosts", input_dictionary)
         if action == "d":
             delete_post()
         if action == "v":
