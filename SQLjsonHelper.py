@@ -1,5 +1,6 @@
 from itertools import islice
 import sqlite3
+
 # https://docs.python.org/3/library/sqlite3.html
 conn = sqlite3.connect('postDB.db')
 
@@ -9,9 +10,9 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS redditPosts
 conn.commit()
 
 input_dictionary = {
-  "postId": 12345,
-  "author": "JohnSmith",
-  "likes": 123
+    "postId": 12345,
+    "author": "JohnSmith",
+    "likes": 123
 }
 
 
@@ -33,13 +34,20 @@ def add_post(table_name, input_dict):
     sql_prompt += "("
     sql_prompt += ", ".join(str(v) for v in input_dict.keys())
     sql_prompt += ") VALUES ("
-    for x in range(len(input_dict)-1):
+    for x in range(len(input_dict) - 1):
         sql_prompt += "?, "
     sql_prompt += "?)"
-    print("sql_prompt: ", sql_prompt)
 
     # Executes prompt
     cursor.execute(sql_prompt, list(input_dict.values()))
+    conn.commit()
+
+
+def delete_post(table_name, input_dict):
+    sql_prompt = "DELETE FROM "
+    sql_prompt += table_name
+    sql_prompt += " WHERE postId = ?"
+    cursor.execute(sql_prompt, (input_dict["postId"],))
     conn.commit()
 
 
@@ -50,23 +58,21 @@ def update_likes(new_likes):
     conn.commit()
 
 
-def display_table():
-    cursor.execute("SELECT COUNT(*) FROM redditPosts")
+def display_table(table_name):
+    sql_prompt = "SELECT COUNT(*) FROM "
+    sql_prompt += table_name
+    cursor.execute(sql_prompt)
     result = cursor.fetchall()
     if result[0][0] == 0:
-        print("redditPosts Table is currently empty\n")
+        print("Table", table_name, "is currently empty")
 
     else:
-        cursor.execute("SELECT * FROM redditPosts")
+        sql_prompt = "SELECT * FROM "
+        sql_prompt += table_name
+        cursor.execute(sql_prompt)
         rows = cursor.fetchall()
         for row in rows:
             print(row)
-        print("\n")
-
-
-def delete_post():
-    cursor.execute("DELETE FROM redditPosts WHERE postId = ?", (input_dictionary["postId"],))
-    conn.commit()
 
 
 def clear_table(table_name):
@@ -79,25 +85,30 @@ def drop_table(table_name):
     sql_prompt += table_name
     cursor.execute(sql_prompt)
     conn.commit()
+    print("Dropped table", table_name)
     main()
 
 
 # Modifies the table
 def table_modifier(main_table_name):
-    action = "s"
+    action = "0"
+    print("Enter an action:\nn - table name\n a - add_post \n d - delete post\n v - view table\n "
+          "c - clear table\nf - drop table\ns - change tables\nh - help\nq - quit\n "
+          "----------------------")
     while action != "q":
-        action = input("Enter an action:\nn - table name\n a - add_post \n d - delete post\n v - view table\n "
-                       "c - clear table\nf - drop table\ns - change tables\nq - quit\n "
-                       "----------------------\n")
+        action = input()
         print("Action: '", action, "'")
+        if action == "h":
+            print("Commands:\nn - table name\n a - add_post \n d - delete post\n v - view table\n "
+                  "c - clear table\nf - drop table\ns - change tables\nh - help\nq - quit")
         if action == "n":
-            print("Table Name: ", main_table_name, "\n")
+            print("Table Name: ", main_table_name)
         if action == "a":
             add_post(main_table_name, input_dictionary)
         if action == "d":
-            delete_post()
+            delete_post(main_table_name, input_dictionary)
         if action == "v":
-            display_table()
+            display_table(main_table_name)
         if action == "c":
             clear_table(main_table_name)
         if action == "f":
