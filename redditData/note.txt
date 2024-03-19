@@ -1,2 +1,0 @@
-Please put every reddit api/data process codes here and make appropriate changes
-Just for better organize

@@ -1,4 +1,4 @@
-from redditData.reddit_api import Reddit_API
+from reddit_api import Reddit_API
 
 # Current Issue:
 # I am unable to get replies under the more replies dropdown menu
