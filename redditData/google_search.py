@@ -17,7 +17,7 @@ def search_by_time_period(start_date = "20231203", end_date = "20240110"):
     article_ids = []
     num = 10
     while(int(start_date) < int(end_date) and num == 10):
-        print('Request google search')
+        print(f'Request from Google: {start_date} {end_date}')
         params = {
             "key": "AIzaSyBG2uCYJDwpZLlVcsmracUk3zRSJZMpn98", # The API key
             "cx": "b3dc3b1ce374e440c", # The CSE ID
@@ -35,7 +35,7 @@ def search_by_time_period(start_date = "20231203", end_date = "20240110"):
                 start_date = max(date_obj.strftime("%Y%m%d"),start_date)
         else:
             print(f"Request failed with status code {response.status_code}")
-    print("Finished all request")
+    print("Finished all requests")
     return article_ids
 
 if __name__ == "__main__":
