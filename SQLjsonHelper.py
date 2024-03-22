@@ -1,4 +1,3 @@
-from itertools import islice
 import sqlite3
 
 # https://docs.python.org/3/library/sqlite3.html
@@ -22,6 +21,7 @@ input_dictionary2 = {
 }
 
 
+# Given an input dictionary, adds a new entry(post) to Table table_name
 def add_post(table_name, input_dict):
     # Checks if post already exists in database
     sql_prompt = "SELECT 1 FROM "
@@ -49,11 +49,23 @@ def add_post(table_name, input_dict):
     conn.commit()
 
 
-def delete_post(table_name, input_dict):
+def delete_post(table_name, postId):
+    # Checks if post exists in database
+    sql_prompt = "SELECT 1 FROM "
+    sql_prompt += table_name
+    sql_prompt += " WHERE postId = "
+    sql_prompt += postId
+    cursor.execute(sql_prompt)
+    result = cursor.fetchall()
+    if not result:
+        print("ERROR: No post with ", postId, " exists.")
+        return
+
+    # Delete post
     sql_prompt = "DELETE FROM "
     sql_prompt += table_name
     sql_prompt += " WHERE postId = ?"
-    cursor.execute(sql_prompt, (input_dict["postId"],))
+    cursor.execute(sql_prompt, postId)
     conn.commit()
 
 
@@ -79,6 +91,7 @@ def replace_post(table_name, old_input_dict, new_input_dict):
 
     # Execute command
     cursor.execute(sql_prompt, new_list)
+    conn.commit()
 
 
 def display_table(table_name):
@@ -129,7 +142,9 @@ def table_modifier(main_table_name):
         if action == "a":
             add_post(main_table_name, input_dictionary1)
         if action == "d":
-            delete_post(main_table_name, input_dictionary1)
+            post_to_delete = input("Type the postID to delete or type \"q\" to cancel.\n")
+            if post_to_delete != "q":
+                delete_post(main_table_name, post_to_delete)
         if action == "r":
             replace_post(main_table_name, input_dictionary1, input_dictionary2)
         if action == "v":
@@ -161,6 +176,10 @@ def ask_new_table(main_table_name):
     print("The table called \"", main_table_name, "\" does not exist.")
     action = input("Do you want to create a new table? Y\\N\n")
     action = action.lower()
+
+    while action != "n" and action != "y":
+        action = input("Invalid answer; Enter Y or N.\n").lower()
+
     if action == "y":
         create_table(main_table_name)
         table_modifier(main_table_name)
@@ -200,7 +219,9 @@ def jump_start_menu():
 
 
 def main():
+    # Asks which table to work on
     name = jump_start_menu()
+
     # Checks if table exists
     if check_table_exists(name):
         table_modifier(name)
