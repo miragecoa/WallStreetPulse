@@ -13,8 +13,10 @@ response, chat_history = gpt_api.get_response("What is RCOS")
 response, chat_history = gpt_api.get_response("What is WallStreetPulse")
 '''
 
-from Reddit_Posts import Reddit_Posts
+from redditData.Reddit_Posts import Reddit_Posts
 from datetime import datetime, timedelta
+from yahoo import getPrice
+import yfinance as yahooFinance
 
 def main():
     posts = Reddit_Posts(num_posts=50, subreddit_name="wallstreetbets")
@@ -45,6 +47,21 @@ def main():
     # Print the results
     for author, frequency in authors_frequency.items():
         print(f"The frequency of posts by {author} in the chosen subreddit in the last {time_frame_days} days is: {frequency}")
+
+        # Print titles of posts by the specified author within the time frame
+        posts_titles_within_time_frame = [post.title for post in posts.posts if
+                                           post.created_utc > timestamp_limit.timestamp() and
+                                           post.author and
+                                           post.author.name == author]
+        print(f"Titles of posts by {author} in the last {time_frame_days} days:")
+        for title in posts_titles_within_time_frame:
+            print(f"- {title}")
+    print(len(authors_frequency))
+    
+    ###test to see if all post stats are correct
+    # Get the timestamp for the start of the time frame
+    
+    timestamp_limit = datetime.utcnow() - timedelta(days=time_frame_days)
 
     # Get post frequency, average upvotes per post, upvote to downvote ratio per post,
     # and average comments per post for each unique author in the specified time frame
@@ -79,6 +96,7 @@ def main():
     for author, score in author_scores.items():
         print(f"The composite score for {author} is: {score}")
     '''
+    '''
     ###Test for top authors
     num_comments=5
 
@@ -106,7 +124,25 @@ def main():
                 print()
 
             print()
-    
+    '''
+   #GetFacebookInformation = yahooFinance.Ticker("META")
+ 
+    # Let us  get historical stock prices for Facebook 
+    # covering the past few years.
+    # max->maximum number of daily prices available 
+    # for Facebook.
+    # Valid options are 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 
+    # 5y, 10y and ytd.
+   # print(GetFacebookInformation.history(period="1mo"))
+    # Example usage
+    symbol = "GME"
+    start_date = "2021-01-13"  # Start date (YYYY-MM-DD)
+    end_date = "2021-02-02"  # End date (YYYY-MM-DD)
+
+    stock_prices = getPrice(symbol, start_date, end_date)
+    if stock_prices is not None:
+        print(stock_prices)
+        
 
 if __name__ == "__main__":
     main()
