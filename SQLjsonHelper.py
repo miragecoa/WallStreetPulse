@@ -9,10 +9,16 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS redditPosts
                   (postId INTEGER PRIMARY KEY, author TEXT, likes INTEGER)''')
 conn.commit()
 
-input_dictionary = {
+input_dictionary1 = {
     "postId": 12345,
     "author": "JohnSmith",
     "likes": 123
+}
+
+input_dictionary2 = {
+    "postId": 12345,
+    "author": "Greg",
+    "likes": 483
 }
 
 
@@ -51,11 +57,28 @@ def delete_post(table_name, input_dict):
     conn.commit()
 
 
-def update_likes(new_likes):
-    input_dictionary["likes"] = new_likes
-    cursor.execute("UPDATE redditPosts SET likes = ? WHERE id = ?",
-                   (new_likes, input_dictionary["postId"]))
-    conn.commit()
+# Replaces a post with another post which has an identical postID
+def replace_post(table_name, old_input_dict, new_input_dict):
+    keys = list(old_input_dict.keys())
+    keys.pop(0)
+
+    old_id = list(old_input_dict.values())[0]
+    new_list = list(new_input_dict.values())
+    new_id = new_list[0]
+    new_list.pop(0)
+    new_list.append(old_id)
+
+    if old_id != new_id:
+        print("ERROR: postIds", old_id, "(old) and", new_id, "(new) don't match. Cannot replace post")
+        exit(0)
+
+    # create Sql_prompt
+    sql_prompt = "UPDATE "+table_name+" SET "
+    sql_prompt += "=?, ".join(str(v) for v in keys)
+    sql_prompt += "=? WHERE postId=?"
+
+    # Execute command
+    cursor.execute(sql_prompt, new_list)
 
 
 def display_table(table_name):
@@ -92,21 +115,23 @@ def drop_table(table_name):
 # Modifies the table
 def table_modifier(main_table_name):
     action = "0"
-    print("Enter an action:\nn - table name\n a - add_post \n d - delete post\n v - view table\n "
+    print("Enter an action:\nn - table name\n a - add_post \n d - delete post\n r - replace post\n v - view table\n "
           "c - clear table\nf - drop table\ns - change tables\nh - help\nq - quit\n "
           "----------------------")
     while action != "q":
         action = input()
         print("Action: '", action, "'")
         if action == "h":
-            print("Commands:\nn - table name\n a - add_post \n d - delete post\n v - view table\n "
+            print("Commands:\nn - table name\n a - add_post \n d - delete post\n r - replace post\n v - view table\n "
                   "c - clear table\nf - drop table\ns - change tables\nh - help\nq - quit")
         if action == "n":
             print("Table Name: ", main_table_name)
         if action == "a":
-            add_post(main_table_name, input_dictionary)
+            add_post(main_table_name, input_dictionary1)
         if action == "d":
-            delete_post(main_table_name, input_dictionary)
+            delete_post(main_table_name, input_dictionary1)
+        if action == "r":
+            replace_post(main_table_name, input_dictionary1, input_dictionary2)
         if action == "v":
             display_table(main_table_name)
         if action == "c":
