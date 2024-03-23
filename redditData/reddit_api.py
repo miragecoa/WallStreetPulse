@@ -30,7 +30,7 @@ class Reddit_API:
 
     # Gets hot posts
     def get_hot_posts(self):
-        return requests.get(BASE_URL + "/hot?limit=1000", headers=headers).json()
+        return requests.get(BASE_URL + "/hot?limit=100", headers=headers).json()
 
     # post should be in this format json.get('data').get('children')[i]
     def get_post_id(self, post):
@@ -78,21 +78,73 @@ class Reddit_API:
                 res = self.get_all_comments_data(data.get('data').get('children')[i].get('data').get('replies'), res)
         return res
 
+    # Gets the dictionaries of hidden replies and adds them to the list of dicts
+    def get_more_dicts(self, comment, dicts, id, depth):
+        children = ""
+        children_size = len(comment.get('data').get('children'))
+        for i in range(0, children_size):
+            if i == children_size - 1:
+                children += comment.get('data').get('children')[i]
+            else:
+                children += comment.get('data').get('children')[i] + ","
+
+        # API request to get hidden replies
+        replies = requests.get(BASE_URL + "/api/morechildren?link_id=t3_" + id + "&limit_children=false&depth=" + depth + "&children=" + children,headers=headers).json()
+        if replies.get('jquery')[10][3][0]:
+            reply_count = len(replies.get('jquery')[10][3][0])
+            for i in range(0, reply_count):
+                dicts.append(replies.get('jquery')[10][3][0][i].get('data'))
+
+    # Returns a list of dictionaries
+    def get_dicts(self, data, dicts, id, depth):
+        size = len(data.get('data').get('children'))
+        for i in range(0, size):
+            # Check if the reply has any content
+            if not data.get('data').get('children')[i].get('data').get('body'):
+                self.get_more_dicts(data.get('data').get('children')[i], dicts, id, depth)
+            else:
+                dicts.append(data.get('data').get('children')[i].get('data'))
+            # Get the replies to the comment
+            if isinstance(data.get('data').get('children')[i].get('data').get('replies'), dict):
+                self.get_dicts(data.get('data').get('children')[i].get('data').get('replies'), dicts, id, depth)
+
     # FUNCTIONS FOR TESTING
-    # Gets all data for the post for testing
-    def get_all_post_data(self, data):
-        print(self.get_post_title(data))
-        print(self.get_post_content(data))
-        print(self.get_ups(data))
-        print(self.get_downs(data))
-        print(self.get_upvote_ratio(data))
+    # New Issue: Hidden threads under comments
+    # Possible to get replies after a certain comment ID https://www.reddit.com/r/wallstreetbets/comments/1axhn74/comment/ks1vhmj/
+    # Gets more replies out of comments
+    def get_more_children(self, data):
+        # creates a list of children ids separated by
+        children = ""
+        for i in range(0, len(data.get('data').get('children'))):
+            if (i == len(data.get('data').get('children')) - 1):
+                children += data.get('data').get('children')[i]
+            else:
+                children += data.get('data').get('children')[i] + ","
+
+        # API request to get hidden replies
+        replies = requests.get(BASE_URL + "/api/morechildren?link_id=t3_1axhn74&limit_children=false&depth=1000&children=" + children, headers=headers).json()
+        result = ""
+        if replies.get('jquery')[10][3][0]:
+            for i in range(0, len(replies.get('jquery')[10][3][0])):
+                if replies.get('jquery')[10][3][0][i].get('data').get('body'):
+                    result = result + f"{replies.get('jquery')[10][3][0][i].get('data').get('body')}" + "\n"
+                else:
+                    thread = requests.get(BASE_URL + "/comments/" + id + "/comment/" + f"{replies.get('jquery')[10][3][0][i].get('data').get('id')}")
+                    print(f"{replies.get('jquery')[10][3][0][i].get('data')}" + "\n")
+        return result
 
     # Gets all comments and all replies to a comment of a post for testing
     # data should be in format post[1]
     def get_comments(self, data):
         # Prints the direct comments of the post
-        for i in range(0, len(data.get('data').get('children'))):
-            print(self.get_comment(data.get('data').get('children')[i]))
+        size = len(data.get('data').get('children'))
+        for i in range(0, size):
+            # Check for none type
+            if not self.get_comment(data.get('data').get('children')[i]):
+                print(self.get_more_children(data.get('data').get('children')[i]))
+            else:
+                print(self.get_comment(data.get('data').get('children')[i]))
+
             # Print all replies to the comment
             if isinstance(data.get('data').get('children')[i].get('data').get('replies'), dict):
                 self.get_comments(data.get('data').get('children')[i].get('data').get('replies'))
