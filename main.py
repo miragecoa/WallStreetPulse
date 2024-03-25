@@ -15,7 +15,7 @@ response, chat_history = gpt_api.get_response("What is WallStreetPulse")
 
 from redditData.Reddit_Posts import Reddit_Posts
 from datetime import datetime, timedelta
-from yahoo import getPrice
+from yahoo import getPrice, plot
 import yfinance as yahooFinance
 
 def main():
@@ -141,7 +141,7 @@ def main():
 
     stock_prices = getPrice(symbol, start_date, end_date)
     if stock_prices is not None:
-        print(stock_prices)
+        plot(stock_prices, symbol)
         
 
 if __name__ == "__main__":
