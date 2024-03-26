@@ -7,14 +7,11 @@ def getPrice(symbol, start_date, end_date):
     try:
     
         ticker = yf.Ticker(symbol)
-        
- 
         stock_data = ticker.history(start=start_date, end=end_date)
-        
-   
         open_close_prices = stock_data[['Open', 'Close']]
         
         return open_close_prices
+    
     except Exception as e:
         print(f"Failed to fetch data from Yahoo Finance API: {e}")
 
@@ -32,5 +29,6 @@ def plot(stock_data, symbol):
         plt.xticks(rotation=45)  
         plt.tight_layout()  
         plt.show()
+        
     except Exception as e:
         print(f"Failed to plot data: {e}")

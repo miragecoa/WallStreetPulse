@@ -2,6 +2,7 @@ import praw
 from collections import Counter
 from datetime import datetime, timedelta
 
+
 ID = "mGJKXOitGGulU5pBJ9Zmqg"
 SECRIT_KEY = "zZR3V_O4kRdzjJqKZN9-oNluADiHfg"
 USER_NAME = "WallStreetPulse"
@@ -31,8 +32,7 @@ class Reddit_Posts:
     #   n: the number of the post
     # return: the author name of the n-th post
     # String
-    def get_author(self, n):
-        return self.posts[n].author
+  
     
     def get_user_post_frequency(self, username, time_frame_days):
         # Calculate the timestamp for the specified time frame
@@ -129,10 +129,10 @@ class Reddit_Posts:
 
         # Calculate author scores
         author_scores = self.calculate_author_scores(authors_frequency, authors_average_upvotes, authors_upvote_to_downvote_ratio, authors_average_comments)
-
+        
         # Sort authors based on their scores (descending order)
         sorted_authors = sorted(author_scores.items(), key=lambda x: x[1], reverse=True)
-
+        
         # Take the top 10 authors
         top_authors = sorted_authors[:10]
 
@@ -179,6 +179,9 @@ class Reddit_Posts:
     # String
     def get_title(self, n):
         return self.posts[n].title
+    
+    def get_author(self, n):
+        return self.posts[n].author
 
     ### Specification ###
     # inputs:

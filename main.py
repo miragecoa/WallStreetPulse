@@ -13,14 +13,15 @@ response, chat_history = gpt_api.get_response("What is RCOS")
 response, chat_history = gpt_api.get_response("What is WallStreetPulse")
 '''
 
-from redditData.Reddit_Posts import Reddit_Posts
+from Reddit_Posts import Reddit_Posts
 from datetime import datetime, timedelta
 from yahoo import getPrice, plot
-import yfinance as yahooFinance
+from gpt_test import analyze_post_responses
+
 
 def main():
     posts = Reddit_Posts(num_posts=50, subreddit_name="wallstreetbets")
-    time_frame_days = 5
+    time_frame_days = 2
     
     '''
     ###test to see posts titles, authors, and comments works
@@ -96,14 +97,15 @@ def main():
     for author, score in author_scores.items():
         print(f"The composite score for {author} is: {score}")
     '''
-    '''
+    
     ###Test for top authors
-    num_comments=5
+    num_comments=2
 
     top_authors_info = posts.get_top_authors_info(time_frame_days, num_comments)
+    analyze_post_responses(top_authors_info)
 
     # Print or use the gathered information as needed
-    
+    '''
     for author_info in top_authors_info:
         print(f"Author: {author_info['author']}")
 
@@ -124,7 +126,7 @@ def main():
                 print()
 
             print()
-    '''
+    
    #GetFacebookInformation = yahooFinance.Ticker("META")
  
     # Let us  get historical stock prices for Facebook 
@@ -142,7 +144,13 @@ def main():
     stock_prices = getPrice(symbol, start_date, end_date)
     if stock_prices is not None:
         plot(stock_prices, symbol)
-        
+    
+    
+    # Get top authors info
+    
+    # Analyze responses for each post
+    
+    '''
 
 if __name__ == "__main__":
     main()
