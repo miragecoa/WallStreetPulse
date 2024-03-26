@@ -16,11 +16,11 @@ response, chat_history = gpt_api.get_response("What is WallStreetPulse")
 from Reddit_Posts import Reddit_Posts
 from datetime import datetime, timedelta
 from yahoo import getPrice, plot
-from gpt_test import analyze_post_responses
+#from gpt_test import analyze_post_responses
 
 
 def main():
-    posts = Reddit_Posts(num_posts=50, subreddit_name="wallstreetbets")
+    posts = Reddit_Posts(num_posts=20, subreddit_name="wallstreetbets")
     time_frame_days = 2
     
     '''
@@ -100,9 +100,9 @@ def main():
     
     ###Test for top authors
     num_comments=2
-
+    
     top_authors_info = posts.get_top_authors_info(time_frame_days, num_comments)
-    analyze_post_responses(top_authors_info)
+    #analyze_post_responses(top_authors_info)
 
     # Print or use the gathered information as needed
     '''
@@ -126,6 +126,11 @@ def main():
                 print()
 
             print()
+    '''
+    gpt_strings = posts.getGPTString(top_authors_info)
+    print(gpt_strings[1])
+    # Print each GPT string
+    
     
    #GetFacebookInformation = yahooFinance.Ticker("META")
  
@@ -150,7 +155,7 @@ def main():
     
     # Analyze responses for each post
     
-    '''
+    
 
 if __name__ == "__main__":
     main()

@@ -96,7 +96,7 @@ class Reddit_Posts:
                                    for author, frequency in author_frequency.items()
                                    for comments in [author_comments[author]]}
 
-        return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio, author_average_comments
+        return dict(author_frequency), author_average_upvotes, author_upvote_to_downvote_ratio, author_average_comments, 
 
     weights = {
         'frequency': 0.2,
@@ -138,12 +138,15 @@ class Reddit_Posts:
 
         # Gather information for each top author
         author_info = []
+        
         for author, _ in top_authors:
             # Get titles, content, comments, and replies
             posts_info = []
             for post_index in range(len(self.posts)):
                 title = self.get_title(post_index)
                 content = self.get_content(post_index)
+                upvotes = self.get_upvotes(post_index)
+                downvotes = self.get_downvotes(post_index)
                 author_name = self.get_author(post_index)  # Get the author name for the current post
                 comments = self.get_comments(post_index, num_comments)
                 comment_data = []
@@ -159,19 +162,67 @@ class Reddit_Posts:
                     'title': title,
                     'content': content,
                     'author': author_name,  # Store the author name for the current post
-                    'comments': comment_data
+                    'comments': comment_data,
+                    'upvotes':upvotes,
+                    'downvotes':downvotes
                 })
 
             # Store the information in a dictionary
             author_info.append({
                 'author': author,
                 'posts': posts_info
+                
             })
 
         return author_info
     
     
+    def getGPTString(self, author_info):
     
+        gpt_strings = []  # List to store the GPT strings for each post
+        
+        for author_post in author_info:
+            author = author_post['author']
+            posts = author_post['posts']
+            
+            for post_info in posts:
+                title = post_info['title']
+                content = post_info['content']
+                author_name = post_info['author']
+                upvotes = post_info['upvotes']
+                downvotes = post_info['downvotes']
+                
+                
+                gpt_string = f"Post Title: {title}\n"
+                gpt_string += f"  Post Content: {content}\n"
+                gpt_string += f"  Post Author: {author_name}\n"
+                gpt_string += f"  Post Upvotes: {upvotes}\n"
+                gpt_string += f"  Post Downvotes: {downvotes}\n"
+                
+                # Add comments and replies
+                for comment_data in post_info['comments']:
+                    comment_author = comment_data['author']
+                    comment_content = comment_data['content']
+                    comment_upvotes = comment_data['upvotes']
+                    comment_downvotes = comment_data['downvotes']
+                    
+                    gpt_string += f"    Comment by {comment_author}: {comment_content}\n"
+                    gpt_string += f"    Comment Upvotes: {comment_upvotes}\n"
+                    gpt_string += f"    Comment Downvotes: {comment_downvotes}\n"
+                    
+                    # Add replies
+                    for reply in comment_data['replies']:
+                        reply_author = reply['author']
+                        reply_content = reply['content']
+                        
+                        gpt_string += f"      Reply by {reply_author}: {reply_content}\n"
+                
+                # Add the constructed string to the list
+                gpt_strings.append(gpt_string)
+        
+        return gpt_strings
+
+
     ### Specification ###
     # inputs:
     #   n: the number of the post
